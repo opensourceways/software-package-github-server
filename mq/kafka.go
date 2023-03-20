@@ -10,7 +10,7 @@ var instance *serviceImpl
 
 func Init(cfg *Config, log *logrus.Entry) error {
 	err := kafka.Init(
-		mq.Addresses(cfg.KafkaAddress),
+		mq.Addresses(cfg.Address),
 		mq.Log(log),
 	)
 	if err != nil {

@@ -20,7 +20,7 @@ update_repo(){
     if [ -f go.mod ]; then
         go mod tidy
     else
-        go mod init github.com/opensourceways/robot-github-software-package
+        go mod init github.com/opensourceways/software-package-github-server
         go mod tidy
     fi
 }

@@ -14,7 +14,12 @@ import (
 	"github.com/opensourceways/server-common-lib/secret"
 	"github.com/sirupsen/logrus"
 
+	"github.com/opensourceways/software-package-github-server/config"
+	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/mq"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/pullrequestimpl"
 )
 
 type options struct {
@@ -49,7 +54,7 @@ func main() {
 		logrus.Fatalf("Invalid options: %v", err)
 	}
 
-	cfg, err := LoadConfig(o.service.ConfigFile)
+	cfg, err := config.LoadConfig(o.service.ConfigFile)
 	if err != nil {
 		logrus.Fatalf("load config file failed: %v", err)
 	}
@@ -69,8 +74,12 @@ func main() {
 
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
 
-	m := newMessageService(c, cfg)
-	if err = m.subscribe(); err != nil {
+	message := messageimpl.NewMessageImpl(cfg.MessageServer.TopicsToNotify)
+	pullRequest := pullrequestimpl.NewPullRequestImpl(cfg, c)
+	msgService := app.NewMessageService(pullRequest, message)
+
+	ms := messageserver.Init(msgService)
+	if err = ms.Subscribe(&cfg.MessageServer); err != nil {
 		logrus.Fatalf("subscribe failed, err:%v", err)
 	}
 
