@@ -1,8 +1,6 @@
 package domain
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
 const platformGithub = "github"
 

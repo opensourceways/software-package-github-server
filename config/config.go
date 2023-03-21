@@ -5,12 +5,13 @@ import (
 
 	"github.com/opensourceways/software-package-github-server/message-server"
 	"github.com/opensourceways/software-package-github-server/mq"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/pullrequestimpl"
 )
 
 type Config struct {
-	Org           string               `json:"org"`
-	MQ            mq.Config            `json:"mq"`
-	MessageServer messageserver.Config `json:"message_server"`
+	MQ            mq.Config              `json:"mq"`
+	MessageServer messageserver.Config   `json:"message_server"`
+	PullRequest   pullrequestimpl.Config `json:"pull_request"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -31,6 +32,7 @@ func (cfg *Config) configItems() []interface{} {
 	return []interface{}{
 		&cfg.MQ,
 		&cfg.MessageServer,
+		&cfg.PullRequest,
 	}
 }
 
@@ -48,10 +50,6 @@ func (cfg *Config) SetDefault() {
 		if f, ok := i.(configSetDefault); ok {
 			f.SetDefault()
 		}
-	}
-
-	if cfg.Org == "" {
-		cfg.Org = "src-openeuler"
 	}
 }
 

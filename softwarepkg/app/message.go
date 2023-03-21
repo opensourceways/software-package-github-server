@@ -5,7 +5,7 @@ import (
 )
 
 type MessageService interface {
-	HandleCreateRepo(CmdToCreateRepo) error
+	CreateRepo(CmdToCreateRepo) error
 }
 
 func NewMessageService(
@@ -23,7 +23,7 @@ type messageService struct {
 	producer domain.SoftwarePkgProducer
 }
 
-func (m *messageService) HandleCreateRepo(cmd CmdToCreateRepo) error {
+func (m *messageService) CreateRepo(cmd CmdToCreateRepo) error {
 	url, err := m.pr.CreateRepo(cmd.PkgName)
 	if err != nil {
 		return err

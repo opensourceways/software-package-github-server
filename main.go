@@ -74,19 +74,16 @@ func main() {
 
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
 
-	message := messageimpl.NewMessageImpl(cfg.MessageServer.TopicsToNotify)
-	pullRequest := pullrequestimpl.NewPullRequestImpl(cfg, c)
+	message := messageimpl.NewMessageImpl(cfg.MessageServer.Message)
+	pullRequest := pullrequestimpl.NewRepoImpl(cfg.PullRequest, c)
 	msgService := app.NewMessageService(pullRequest, message)
 
-	ms := messageserver.Init(msgService)
-	if err = ms.Subscribe(&cfg.MessageServer); err != nil {
-		logrus.Fatalf("subscribe failed, err:%v", err)
-	}
+	ms := messageserver.Init(msgService, cfg.MessageServer)
 
-	run()
+	run(ms)
 }
 
-func run() {
+func run(ms *messageserver.MessageServer) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 
@@ -122,5 +119,7 @@ func run() {
 		}
 	}(ctx)
 
-	<-ctx.Done()
+	if err := ms.Run(ctx); err != nil {
+		logrus.Fatalf("run message server, err:%v", err)
+	}
 }
