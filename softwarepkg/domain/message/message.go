@@ -1,4 +1,4 @@
-package domain
+package message
 
 type EventMessage interface {
 	Message() ([]byte, error)

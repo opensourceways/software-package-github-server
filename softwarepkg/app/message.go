@@ -2,6 +2,8 @@ package app
 
 import (
 	"github.com/opensourceways/software-package-github-server/softwarepkg/domain"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/message"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/domain/repo"
 )
 
 type MessageService interface {
@@ -9,8 +11,8 @@ type MessageService interface {
 }
 
 func NewMessageService(
-	p domain.Repo,
-	s domain.SoftwarePkgProducer,
+	p repo.Repo,
+	s message.SoftwarePkgProducer,
 ) *messageService {
 	return &messageService{
 		pr:       p,
@@ -19,11 +21,15 @@ func NewMessageService(
 }
 
 type messageService struct {
-	pr       domain.Repo
-	producer domain.SoftwarePkgProducer
+	pr       repo.Repo
+	producer message.SoftwarePkgProducer
 }
 
 func (m *messageService) CreateRepo(cmd CmdToCreateRepo) error {
+	if cmd.Platform != domain.PlatformGithub {
+		return nil
+	}
+
 	url, err := m.pr.CreateRepo(cmd.PkgName)
 	if err != nil {
 		return err

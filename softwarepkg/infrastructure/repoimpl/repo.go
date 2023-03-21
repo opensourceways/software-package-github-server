@@ -8,7 +8,6 @@ import (
 )
 
 type iClient interface {
-	GetRepo(org, repo string) (*github.Repository, error)
 	CreateRepo(org string, r *github.Repository) error
 }
 
@@ -25,8 +24,7 @@ type RepoImpl struct {
 }
 
 func (impl *RepoImpl) CreateRepo(repo string) (string, error) {
-	r := &github.Repository{Name: &repo}
-	err := impl.cli.CreateRepo(impl.cfg.Org, r)
+	err := impl.cli.CreateRepo(impl.cfg.Org, &github.Repository{Name: &repo})
 	if err != nil && !strings.Contains(err.Error(), "name already exists") {
 		return "", err
 	}

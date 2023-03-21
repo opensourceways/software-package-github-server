@@ -2,7 +2,7 @@ package domain
 
 import "encoding/json"
 
-const platformGithub = "github"
+const PlatformGithub = "github"
 
 type RepoCreatedEvent struct {
 	PkgId    string `json:"pkg_id"`
@@ -17,7 +17,7 @@ func (e *RepoCreatedEvent) Message() ([]byte, error) {
 func NewRepoCreatedEvent(pkgId, url string) RepoCreatedEvent {
 	return RepoCreatedEvent{
 		PkgId:    pkgId,
-		Platform: platformGithub,
+		Platform: PlatformGithub,
 		RepoLink: url,
 	}
 }

@@ -67,16 +67,16 @@ func main() {
 
 	secretAgent := new(secret.Agent)
 	if err = secretAgent.Start([]string{o.github.TokenPath}); err != nil {
-		logrus.Fatalf("starting secret agent error: %v", err)
+		logrus.Errorf("starting secret agent error: %v", err)
 	}
 
 	defer secretAgent.Stop()
 
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
-
-	message := messageimpl.NewMessageImpl(cfg.MessageServer.Message)
-	repo := repoimpl.NewRepoImpl(cfg.Repo, c)
-	msgService := app.NewMessageService(repo, message)
+	msgService := app.NewMessageService(
+		repoimpl.NewRepoImpl(cfg.Repo, c),
+		messageimpl.NewMessageImpl(cfg.MessageServer.Message),
+	)
 
 	ms := messageserver.Init(msgService, cfg.MessageServer)
 
@@ -120,6 +120,6 @@ func run(ms *messageserver.MessageServer) {
 	}(ctx)
 
 	if err := ms.Run(ctx); err != nil {
-		logrus.Fatalf("run message server, err:%v", err)
+		logrus.Errorf("run message server, err:%v", err)
 	}
 }

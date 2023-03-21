@@ -21,7 +21,7 @@ type MessageServer struct {
 }
 
 func (m *MessageServer) Run(ctx context.Context) error {
-	if err := m.Subscribe(); err != nil {
+	if err := m.subscribe(); err != nil {
 		return err
 	}
 
@@ -30,10 +30,10 @@ func (m *MessageServer) Run(ctx context.Context) error {
 	return nil
 }
 
-func (m *MessageServer) Subscribe() error {
+func (m *MessageServer) subscribe() error {
 	h := map[string]mq.Handler{
-		m.cfg.Topics.ApprovedPkg: m.handleCreateRepo,
-		m.cfg.Topics.MergedPR:    m.handleCreateRepo,
+		m.cfg.Topics.ApprovedPkg:           m.handleCreateRepo,
+		m.cfg.Topics.IndirectlyApprovedPkg: m.handleCreateRepo,
 	}
 
 	return mq.Subscriber().Subscribe(m.cfg.Group, h)
