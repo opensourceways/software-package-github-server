@@ -9,7 +9,7 @@ type MessageService interface {
 }
 
 func NewMessageService(
-	p domain.PullRequest,
+	p domain.Repo,
 	s domain.SoftwarePkgProducer,
 ) *messageService {
 	return &messageService{
@@ -19,7 +19,7 @@ func NewMessageService(
 }
 
 type messageService struct {
-	pr       domain.PullRequest
+	pr       domain.Repo
 	producer domain.SoftwarePkgProducer
 }
 

@@ -1,4 +1,4 @@
-package pullrequestimpl
+package repoimpl
 
 type Config struct {
 	Org string `json:"org"`

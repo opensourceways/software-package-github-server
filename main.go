@@ -19,7 +19,7 @@ import (
 	"github.com/opensourceways/software-package-github-server/mq"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/app"
 	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/messageimpl"
-	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/pullrequestimpl"
+	"github.com/opensourceways/software-package-github-server/softwarepkg/infrastructure/repoimpl"
 )
 
 type options struct {
@@ -75,8 +75,8 @@ func main() {
 	c := client.NewClient(secretAgent.GetTokenGenerator(o.github.TokenPath))
 
 	message := messageimpl.NewMessageImpl(cfg.MessageServer.Message)
-	pullRequest := pullrequestimpl.NewRepoImpl(cfg.PullRequest, c)
-	msgService := app.NewMessageService(pullRequest, message)
+	repo := repoimpl.NewRepoImpl(cfg.Repo, c)
+	msgService := app.NewMessageService(repo, message)
 
 	ms := messageserver.Init(msgService, cfg.MessageServer)
 

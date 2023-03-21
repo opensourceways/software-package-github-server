@@ -1,5 +1,5 @@
 package domain
 
-type PullRequest interface {
+type Repo interface {
 	CreateRepo(repo string) (string, error)
 }

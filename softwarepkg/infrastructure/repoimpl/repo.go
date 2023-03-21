@@ -1,4 +1,4 @@
-package pullrequestimpl
+package repoimpl
 
 import (
 	"fmt"
